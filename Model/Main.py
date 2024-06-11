@@ -61,7 +61,7 @@ if __name__ == '__main__':
         config['all_h_list'] = data_generator.all_h_list
         config['all_r_list'] = data_generator.all_r_list
         config['all_t_list'] = data_generator.all_t_list
-        config['all_vz_list'] = data_generator.all_v_list
+        config['all_v_list'] = data_generator.all_v_list
 
     t0 = time()
 

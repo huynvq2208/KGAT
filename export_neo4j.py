@@ -33,7 +33,7 @@ query = """
         ID(c) as neo4j_course,
         c.course_id as course_id
     ORDER BY user_id
-    LIMIT 100000
+    LIMIT 60000
 """
 
 records = execute_query(query)
@@ -41,7 +41,7 @@ records = execute_query(query)
 df = pd.DataFrame([record.values()
                   for record in records], columns=records[0].keys())
 
-df.to_csv('subgraph_100000.csv', index=False)
+df.to_csv('subgraph_60000.csv', index=False)
 
 driver.close()
 
@@ -49,7 +49,7 @@ time.sleep(3)
 """
     ---------------------------------------------------------------------------------
 """
-data = pd.read_csv('subgraph_100000.csv')
+data = pd.read_csv('subgraph_60000.csv')
 
 users = data['user_id'].unique()
 resources = data['resource_id'].unique()
@@ -71,7 +71,7 @@ entity_remap = {item: idx for idx, item in enumerate(entity)}
 #     print(item, remap_id)
 
 # Step 2.3: Create entity list
-with open('entity_list_100000.txt', 'w') as f:
+with open('entity_list_60000.txt', 'w') as f:
     f.write("org_id remap_id\n")
     for item, remap_id in entity_remap.items():
         item = item.replace('"', '')
@@ -81,7 +81,7 @@ with open('entity_list_100000.txt', 'w') as f:
 # Step 2.4: Create kg_final.txt
 written_lines = set()
 
-with open('kg_final_100000.txt', 'w') as f:
+with open('kg_final_60000.txt', 'w') as f:
     for row in data.itertuples():
         user_id = entity_remap[row.user_id]
         resource_id = entity_remap[row.resource_id]
@@ -101,7 +101,7 @@ with open('kg_final_100000.txt', 'w') as f:
 
 
 # Step 2.5: Create item_list.txt
-with open('item_list_100000.txt', 'w') as f:
+with open('item_list_60000.txt', 'w') as f:
     f.write("org_id remap_id\n")
     for idx, resource in enumerate(resources):
         resource_neo4j = data[data['resource_id'] ==
@@ -111,7 +111,7 @@ with open('item_list_100000.txt', 'w') as f:
         f.write(f"{resource} {idx} {resource_neo4j[0]}\n")
 
 # Step 2.6: Create user_list.txt
-with open('user_list_100000.txt', 'w') as f:
+with open('user_list_60000.txt', 'w') as f:
     f.write("org_id remap_id\n")
     for idx, user in enumerate(users):
         user = user.replace('"', '')
@@ -151,13 +151,13 @@ for user, resource in test_data:
     test_dict[user].append(resource)
 
 # Write train data to train_data.txt
-with open('train_100000.txt', 'w') as train_file:
+with open('train_60000.txt', 'w') as train_file:
     for user, resources in train_dict.items():
         resources_str = ' '.join(map(str, resources))
         train_file.write(f'{user} {resources_str}\n')
 
 # Write test data to test_data.txt
-with open('test_100000.txt', 'w') as test_file:
+with open('test_60000.txt', 'w') as test_file:
     for user, resources in test_dict.items():
         resources_str = ' '.join(map(str, resources))
         test_file.write(f'{user} {resources_str}\n')

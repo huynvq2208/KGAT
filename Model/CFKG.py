@@ -6,6 +6,7 @@ Wang Xiang et al. KGAT: Knowledge Graph Attention Network for Recommendation. In
 '''
 import tensorflow as tf
 import os
+import numpy as np
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 class CFKG(object):
@@ -159,3 +160,11 @@ class CFKG(object):
     def eval(self, sess, feed_dict):
         batch_predictions = sess.run(self.batch_predictions, feed_dict)
         return batch_predictions
+    def save_embeddings(self, session, file_path):
+
+        user_embeddings = session.run(self.weights['user_embed'])
+        item_embeddings = session.run(self.weights['entity_embed'])
+
+        np.savez(file_path, user_embeddings=user_embeddings,
+                    item_embeddings=item_embeddings)
+        print(f"Embeddings saved to {file_path}")

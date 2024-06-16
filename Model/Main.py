@@ -363,8 +363,6 @@ if __name__ == '__main__':
         args.proj_path, args.dataset, model.model_type) 
     model.save_embeddings(sess, final_save_path)
 
-    mrr = model.evaluate(sess, test_users, test_items, K=10)
-    print(f'MRR: {mrr:.4f}')
 
     recs = np.array(rec_loger)
     pres = np.array(pre_loger)

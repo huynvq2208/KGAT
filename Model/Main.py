@@ -21,6 +21,21 @@ import sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
+import logging
+
+# Set up logging configuration
+logging.basicConfig(filename='Log/KGAT_10000_training.log', level=logging.INFO, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Optionally, log to both file and console
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+console.setFormatter(formatter)
+logging.getLogger().addHandler(console)
+
+
+
 def load_pretrained_data(args):
     pre_model = 'mf'
     if args.pretrain == -2:
@@ -226,7 +241,7 @@ if __name__ == '__main__':
                           '\t'.join(['%.5f' % r for r in ret['precision']]),
                           '\t'.join(['%.5f' % r for r in ret['hit_ratio']]),
                           '\t'.join(['%.5f' % r for r in ret['ndcg']]))
-            print(final_perf)
+            logging.info(final_perf)
 
             f.write('\t%s\n\t%s\n' % (split_state[i], final_perf))
         f.close()
@@ -311,7 +326,7 @@ if __name__ == '__main__':
             if args.verbose > 0 and epoch % args.verbose == 0:
                 perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f + %.5f]' % (
                     epoch, time() - t1, loss, base_loss, kge_loss, reg_loss)
-                print(perf_str)
+                logging.info(perf_str)
             continue
 
         """
@@ -342,7 +357,7 @@ if __name__ == '__main__':
                        (epoch, t2 - t1, t3 - t2, loss, base_loss, kge_loss, reg_loss, ret['recall'][0], ret['recall'][-1],
                         ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
                         ret['ndcg'][0], ret['ndcg'][-1])
-            print(perf_str)
+            logging.info(perf_str)
 
         cur_best_pre_0, stopping_step, should_stop = early_stopping(ret['recall'][0], cur_best_pre_0,
                                                                     stopping_step, expected_order='acc', flag_step=10)
@@ -377,7 +392,7 @@ if __name__ == '__main__':
                   '\t'.join(['%.5f' % r for r in pres[idx]]),
                   '\t'.join(['%.5f' % r for r in hit[idx]]),
                   '\t'.join(['%.5f' % r for r in ndcgs[idx]]))
-    print(final_perf)
+    logging.info(final_perf)
 
     save_path = '%soutput/%s/%s.result' % (args.proj_path,
                                            args.dataset, model.model_type)
